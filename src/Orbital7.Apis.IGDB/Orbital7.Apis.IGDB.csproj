@@ -2,16 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <Authors>Josh van Eikeren</Authors>
     <Company>Orbital7</Company>
     <Description>.NET Standard 2.0 library for IGDB API</Description>
-    <Copyright>Copyright © 2019 Orbital7</Copyright>
-    <PackageProjectUrl>https://github.com/orbital7/orbital7.api.igdb</PackageProjectUrl>
+    <Copyright>Copyright © 2020 Orbital7</Copyright>
+    <PackageProjectUrl>https://github.com/orbital7/orbital7.apis.igdb</PackageProjectUrl>
     <PackageIcon>Orbital7.png</PackageIcon>
     <PackageIconUrl />
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyVersion>2.1.2.0</AssemblyVersion>
+    <FileVersion>2.1.2.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
