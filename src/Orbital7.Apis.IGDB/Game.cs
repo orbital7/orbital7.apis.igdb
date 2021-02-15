@@ -18,7 +18,7 @@ namespace Orbital7.Apis.IGDB
 
         public int[] artworks { get; set; }
 
-        public int? bundles { get; set; }
+        public int[] bundles { get; set; }
 
         public GameCategory category { get; set; }
 
@@ -64,10 +64,6 @@ namespace Orbital7.Apis.IGDB
 
         public int[] player_perspectives { get; set; }
 
-        public double? popularity { get; set; }
-
-        public int? pulse_count { get; set; }
-
         public double rating { get; set; }
 
         public int? rating_count { get; set; }
@@ -91,8 +87,6 @@ namespace Orbital7.Apis.IGDB
         public int[] tags { get; set; }
 
         public int[] themes { get; set; }
-
-        public int? time_to_beat { get; set; }
 
         public double? total_rating { get; set; }
 

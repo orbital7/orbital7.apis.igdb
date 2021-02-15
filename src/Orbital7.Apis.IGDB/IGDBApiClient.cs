@@ -2,6 +2,7 @@
 using Orbital7.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +11,42 @@ namespace Orbital7.Apis.IGDB
 {
     public class IGDBApiClient
     {
-        private const string URL_BASE = "https://api-v3.igdb.com";
+        private const string URL_BASE = "https://api.igdb.com/v4";
 
-        private string UserKey { get; set; }
+        private string ClientId { get; set; }
+
+        private string ClientSecret { get; set; }
+
+        private string AccessToken { get; set; }
 
         public IGDBApiClient(
-            string userKey)
+            string clientId,
+            string clientSecret,
+            string accessToken = null)
         {
-            this.UserKey = userKey;
+            this.ClientId = clientId;
+            this.ClientSecret = clientSecret;
+            this.AccessToken = accessToken;
+        }
+
+        public async Task<TokenResponse> GetAccessTokenAsync()
+        {
+            var url = $"https://id.twitch.tv/oauth2/token" +
+                $"?client_id={this.ClientId}" +
+                $"&client_secret={this.ClientSecret}" +
+                $"&grant_type=client_credentials";
+
+            // Create the request.
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "POST";
+            request.KeepAlive = true;
+
+            // Send.
+            using (var webResponse = await request.GetResponseAsync())
+            {
+                var response = await webResponse.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TokenResponse>(response);
+            }
         }
 
         public async Task<string> QueryAsync(
@@ -38,11 +67,15 @@ namespace Orbital7.Apis.IGDB
                 where,
                 sort);
 
+            // Ensure we have an access token.
+            await EnsureAccessTokenAsync();
+
             // Create the request.
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
             request.KeepAlive = true;
-            request.Headers["user-key"] = this.UserKey;
+            request.Headers["Client-ID"] = this.ClientId;
+            request.Headers["Authorization"] = $"Bearer {this.AccessToken}";
 
             // Write the request body.
             var encoding = new UTF8Encoding();
@@ -174,17 +207,16 @@ namespace Orbital7.Apis.IGDB
         private List<T> DeserializeList<T>(
             string result)
         {
-            var firstIndex = result.IndexOf("[");
-            var lastIndex = result.LastIndexOf("]");
-            var json = result.Substring(firstIndex, result.Length - firstIndex -
-                (result.Length - lastIndex) + 1);
+            return JsonConvert.DeserializeObject<List<T>>(result);
+        }
 
-            // Ignore deserialization errors.
-            return JsonConvert.DeserializeObject<List<T>>(json,
-                new JsonSerializerSettings()
-                {
-                    Error = (se, ev) => { ev.ErrorContext.Handled = true; }
-                });
+        private async Task EnsureAccessTokenAsync()
+        {
+            if (string.IsNullOrEmpty(this.AccessToken))
+            {
+                var response = await GetAccessTokenAsync();
+                this.AccessToken = response.AccessToken;
+            }
         }
     }
 }

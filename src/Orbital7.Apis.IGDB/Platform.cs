@@ -22,7 +22,7 @@ namespace Orbital7.Apis.IGDB
 
         public int? platform_logo { get; set; }
         
-        public int? product_family { get; set; }
+        public int? platform_family { get; set; }
 
         public string slug { get; set; }
 
